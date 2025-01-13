@@ -110,7 +110,7 @@ def handle_udp_client(data, addr):
             segments.append(header + payload)
 
         # Send segments in bursts to reduce congestion
-        burst_size = 16  # number of segments to send in a single burst, we don't want it to be too large since we don't know how the hotspot will perform.
+        burst_size = 24  # number of segments to send in a single burst, we don't want it to be too large since we don't know how the hotspot will perform.
         for i in range(0, total_segments, burst_size):
             for j in range(i, min(i + burst_size, total_segments)):
                 send_socket.sendto(segments[j], addr)

@@ -95,7 +95,6 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
         received_segments = {}  # Dictionary to track received segments by sequence number
         received_bytes = 0  # Track the total number of bytes received
         last_receive_time = time.time()  # Track the last time a segment was received
-
         while True:
             try:
                 data, _ = udp_socket.recvfrom(3072)  # Receive a segment 
@@ -121,8 +120,8 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
                     break
 
             except socket.timeout:
-                    if time.time() - last_receive_time >= 0.5:
-                        break
+                        if received_segments:
+                            break
 
         # Calculate total transfer time and speed
         total_time = time.time() - start_time
@@ -132,7 +131,7 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
         print(Fore.GREEN + f"UDP transfer #{conn_num} finished, "
                           f"total time: {total_time:.2f} seconds, "
                           f"total speed: {transmission_speed_bits:.1f} bits/second, "
-                          f"percentage of packets received successfully: {success_rate}%")
+                          f"percentage of packets received successfully: {success_rate:.0f}%")
 
     except Exception as e:
         print(Fore.RED + f"Error occurred during UDP transfer #{conn_num}: {str(e)}")
