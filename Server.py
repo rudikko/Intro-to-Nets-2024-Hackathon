@@ -70,7 +70,7 @@ def handle_udp_client(data, addr):
     Handles incoming UDP packets, addr is a tuple made up of the client's IP address and port number.
     """
 
-    print(f"Received UDP packet from {addr[0]}")
+    print(f"Received UDP request from {addr[0]}")
     magic_cookie, msg_type, file_size  = struct.unpack('!IBQ', data) # unpack the received packet to get the magic cookie, message type and file size (integer, byte and 64bit integer)
 
     # Validate the magic_cookie and message type
@@ -123,13 +123,13 @@ def start_server():
 
     # Set up the socket to listen for incoming connections - tcp
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_socket.bind((server_ip, tcp_port))
+    tcp_socket.bind(('', tcp_port))
     tcp_socket.listen(7) # maximum number of queued connection requests that can wait to be accepted
     tcp_socket.setblocking(False) # make the socket non-blocking - the accept() method will not block the program
 
     # Set up the socket to listen for incoming connections - udp
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    udp_socket.bind((server_ip, udp_port))
+    udp_socket.bind(('', udp_port))
     udp_socket.setblocking(False) # make the socket non-blocking - the recvfrom() method will not block the program
 
 

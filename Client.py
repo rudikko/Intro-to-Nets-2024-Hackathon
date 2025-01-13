@@ -112,7 +112,7 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
                     received_bytes += data_size
 
                 # If all segments are received, or enough time has passed, we can finish the transfer
-                if len(received_segments) >= total_segments or time.time() - start_time >= 1.0: # consider the transfer complete
+                if len(received_segments) >= total_segments or time.time() - last_receive_time >= 1.0: # consider the transfer complete
                     break
 
             except socket.timeout:
