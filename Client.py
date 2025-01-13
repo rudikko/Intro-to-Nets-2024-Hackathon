@@ -15,7 +15,6 @@ def startup():
     """
     while True:
         try:
-            print(Fore.YELLOW + "Setting up client...")
             file_size = int(input("Enter file size (bytes): "))
             tcp_num = int(input("Enter number of TCP connections: "))
             udp_num = int(input("Enter number of UDP connections: "))
@@ -53,7 +52,6 @@ def handle_tcp(server_ip, tcp_port, file_size, conn_num):
     try:
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         tcp_socket.connect((server_ip, tcp_port))
-        print(Fore.YELLOW + f"Connected to server {server_ip} on TCP port {tcp_port}")
 
         tcp_socket.send(f"{file_size}\n".encode()) # sent amount of data required for transfer in bytes as a regular string followed by a new line
 

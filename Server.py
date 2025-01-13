@@ -52,7 +52,6 @@ def handle_tcp_client(clientconn, addr):
     """
     Handles incoming TCP connections, addr is a tuple made up of the client's IP address and port number.
     """
-    print(Fore.YELLOW + f"Accepted TCP connection from {addr[0]}")
     file_size_bytes = clientconn.recv(CONST_SIZE).decode().strip()  # read CONST_SIZE bytes of data and convert it to a string without leading or trailing whitespaces
     file_size = int(file_size_bytes)  # convert the string to an integer
 
@@ -74,7 +73,6 @@ def handle_udp_client(data, addr):
     """
     Handles incoming UDP packets, addr is a tuple made up of the client's IP address and port number.
     """
-    print(Fore.YELLOW + f"Received UDP request from {addr[0]}")
     magic_cookie, msg_type, file_size = struct.unpack('!IBQ', data)  # unpack the received packet to get the magic cookie, message type and file size (integer, byte and 64bit integer)
 
     # Validate the magic_cookie and message type
