@@ -61,7 +61,7 @@ def handle_tcp_client(clientconn, addr):
         to_send = min(single_transmission, left_to_send)
         data = bytearray(random.getrandbits(8) for _ in range(to_send)) # generate random bytes to send to the client
         clientconn.sendall(data) # send the data to the client
-        bytes_sent += to_send
+        already_sent += to_send
 
     clientconn.close() # close the connection
 
@@ -75,6 +75,7 @@ def handle_udp_client(data, addr):
 
     # Validate the magic_cookie and message type
     if magic_cookie != MAGIC_COOKIE or msg_type != MSG_TYPE_REQUEST:
+        print("invalid magic cookie or message type.")
         return
     
     total_segments = (file_size + CONST_SIZE - 1) // CONST_SIZE # calculate the total number of segments to send, an additional segment is needed if the file size is not a multiple of CONST_SIZE
