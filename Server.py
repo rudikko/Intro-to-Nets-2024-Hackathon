@@ -63,7 +63,11 @@ def handle_tcp_client(clientconn, addr):
         left_to_send = file_size - already_sent  # number of bytes left to send
         to_send = min(single_transmission, left_to_send)
         data = bytearray(random.getrandbits(8) for _ in range(to_send))  # generate random bytes to send to the client
-        clientconn.sendall(data)  # send the data to the client
+        try:
+            clientconn.sendall(data)  # send the data to the client
+        except Exception:
+            print(Fore.RED + f"Connection with {addr} was lost unexpectedly.")  # Print error in red
+            break  # Break the loop if the client disconnects unexpectedly
         already_sent += to_send
 
     clientconn.close()  # close the connection
