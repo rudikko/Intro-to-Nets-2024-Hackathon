@@ -3,6 +3,10 @@ import struct
 import threading
 import time
 from configs import *
+from colorama import Fore, Style, init
+
+# Initialize colorama for cross-platform compatibility
+init(autoreset=True)
 
 
 def startup():
@@ -11,6 +15,7 @@ def startup():
     """
     while True:
         try:
+            print(Fore.YELLOW + "Setting up client...")
             file_size = int(input("Enter file size (bytes): "))
             tcp_num = int(input("Enter number of TCP connections: "))
             udp_num = int(input("Enter number of UDP connections: "))
@@ -18,7 +23,7 @@ def startup():
                 raise ValueError()
             return file_size, tcp_num, udp_num
         except ValueError as e:
-            print("Invalid input. Please enter positive numbers only.")
+            print(Fore.RED + "Invalid input. Please enter positive numbers only.")
 
 def waitforoffers():
     """
@@ -34,12 +39,12 @@ def waitforoffers():
             magic_cookie, msg_type, udp_port, tcp_port = struct.unpack('!IBHH', data) # unpack the received data
 
             if magic_cookie == MAGIC_COOKIE and msg_type == MSG_TYPE_OFFER: # validate the magic cookie and message type
-                print(f"Received offer from {addr[0]}")
+                print(Fore.GREEN + f"Received offer from {addr[0]}")
                 return addr[0], udp_port, tcp_port
             else:
-                print("Invalid magic cookie or message type.")
+                print(Fore.RED + "Invalid magic cookie or message type.")
         except Exception:
-            print("Error occurred while waiting for offers.")
+            print(Fore.RED + "Error occurred while waiting for offers.")
 
 def handle_tcp(server_ip, tcp_port, file_size, conn_num):
     """
@@ -48,7 +53,7 @@ def handle_tcp(server_ip, tcp_port, file_size, conn_num):
     try:
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         tcp_socket.connect((server_ip, tcp_port))
-        print(f"Connected to server {server_ip} on TCP port {tcp_port}")
+        print(Fore.YELLOW + f"Connected to server {server_ip} on TCP port {tcp_port}")
 
         tcp_socket.send(f"{file_size}\n".encode()) # sent amount of data required for transfer in bytes as a regular string followed by a new line
 
@@ -69,10 +74,12 @@ def handle_tcp(server_ip, tcp_port, file_size, conn_num):
         transmission_speed_bits = transmission_speed * 8
 
         # print desired output as in the assignment
-        print(f"TCP transfer #{conn_num} finished, " f"total time: {total_time:.2f} seconds, " f"total speed: {transmission_speed_bits:.1f} bits/second")
+        print(Fore.GREEN + f"TCP transfer #{conn_num} finished, "
+                          f"total time: {total_time:.2f} seconds, "
+                          f"total speed: {transmission_speed_bits:.1f} bits/second")
             
     except Exception as e:
-        print("Error occurred while handling TCP connection.")
+        print(Fore.RED + "Error occurred while handling TCP connection.")
     finally:
         tcp_socket.close()
 
@@ -102,7 +109,7 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
 
                 # Validate magic cookie and message type to ensure we are receiving valid data
                 if magic_cookie != MAGIC_COOKIE or msg_type != MSG_TYPE_PAYLOAD:
-                    print("Invalid magic cookie or message type.")
+                    print(Fore.RED + "Invalid magic cookie or message type.")
                     continue
 
                 # Calculate the actual data size in the packet (after the header)
@@ -118,18 +125,18 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
             except socket.timeout:
                 break
 
-            # Calculate total transfer time and speed
-            total_time = time.time() - start_time
-            success_rate = (len(received_segments) / total_segments) * 100
-            transmission_speed_bits = (received_bytes * 8) / total_time  # Speed in bits per second
+        # Calculate total transfer time and speed
+        total_time = time.time() - start_time
+        success_rate = (len(received_segments) / total_segments) * 100
+        transmission_speed_bits = (received_bytes * 8) / total_time  # Speed in bits per second
 
-            print(f"UDP transfer #{conn_num} finished, "
-                f"total time: {total_time:.2f} seconds, "
-                f"total speed: {transmission_speed_bits:.1f} bits/second, "
-                f"percentage of packets received successfully: {success_rate}%")
+        print(Fore.GREEN + f"UDP transfer #{conn_num} finished, "
+                          f"total time: {total_time:.2f} seconds, "
+                          f"total speed: {transmission_speed_bits:.1f} bits/second, "
+                          f"percentage of packets received successfully: {success_rate}%")
 
     except Exception as e:
-        print(f"Error occurred during UDP transfer #{conn_num}: {str(e)}")
+        print(Fore.RED + f"Error occurred during UDP transfer #{conn_num}: {str(e)}")
     finally:
         udp_socket.close()
 
@@ -140,12 +147,11 @@ def startclient():
     """
     file_size, tcp_num, udp_num = startup()
     while True:
-        print("Client started, listening for offer requests...")
+        print(Fore.YELLOW + "Client started, listening for offer requests...")
             
         server_ip, udp_port, tcp_port = waitforoffers()
             
         threads = [] # create a list to store the threads we will create for each connection
-            
         # Create TCP thread for each tcp connection.
         threads.extend(
             threading.Thread(target=handle_tcp, args=(server_ip, tcp_port, file_size, i + 1)) # start from i+1 for transmission number
@@ -167,7 +173,7 @@ def startclient():
             thread.join()
         
         # After it is done, keep listening for offers
-        print("All transfers complete, listening to offer requests")
+        print(Fore.YELLOW + "All transfers complete, listening to offer requests")
     
 if __name__ == "__main__":
     startclient()
