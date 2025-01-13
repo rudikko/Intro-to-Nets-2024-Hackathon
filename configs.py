@@ -6,3 +6,4 @@ MSG_TYPE_REQUEST = 0x3
 MSG_TYPE_PAYLOAD = 0x4
 CONST_SIZE = 1024
 UDP_BROADCAST_PORT = 39457 # Client Port number for broadcasting UDP packets
+TEAM_NAME = "Ferfiz"
