@@ -97,7 +97,7 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
         last_receive_time = time.time()  # Track the last time a segment was received
         while True:
             try:
-                data, _ = udp_socket.recvfrom(3072)  # Receive a segment 
+                data, _ = udp_socket.recvfrom(CONST_SIZE * 3)  # Receive a segment 3KB
                 last_receive_time = time.time()
 
                 # Unpack the header: MAGIC_COOKIE, MSG_TYPE, total segments, and current segment number
