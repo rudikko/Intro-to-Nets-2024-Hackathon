@@ -87,7 +87,7 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
     """
     try:
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        udp_socket.settimeout(0.05)  # Set timeout for receiving data so it won't block forever
+        udp_socket.settimeout(0.1)  # Set timeout , we don't want to wait forever
         udp_socket.sendto(struct.pack('!IBQ', MAGIC_COOKIE, MSG_TYPE_REQUEST, file_size), (server_ip, udp_port)) # build and send the request to the server
 
         start_time = time.time()
@@ -98,7 +98,7 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
 
         while True:
             try:
-                data, _ = udp_socket.recvfrom(4096)  # Receive a segment 
+                data, _ = udp_socket.recvfrom(3072)  # Receive a segment 
                 last_receive_time = time.time()
 
                 # Unpack the header: MAGIC_COOKIE, MSG_TYPE, total segments, and current segment number
@@ -121,7 +121,8 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
                     break
 
             except socket.timeout:
-                break
+                    if time.time() - last_receive_time >= 0.5:
+                        break
 
         # Calculate total transfer time and speed
         total_time = time.time() - start_time
