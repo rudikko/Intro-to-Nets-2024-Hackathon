@@ -3,12 +3,14 @@ This is a client-server application designed to perform network speed tests usin
 
 ## Installation
 1. The project uses Python's standard libraries (socket, time, and struct) and also colorama, so if Python is already installed the only additional installation required is colorama (pip install colorama)
-2. Run the Server: Launch the server by running :
+
+## Usage
+1. Run the Server: Launch the server by running :
 ```bash
 python Server.py
 ```
 
-3. Run the client: Launch the client by running :
+2. Run the client: Launch the client by running :
 ```bash
 python Client.py
 ```
