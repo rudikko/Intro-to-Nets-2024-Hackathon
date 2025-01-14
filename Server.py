@@ -89,7 +89,7 @@ def handle_udp_client(data, addr):
     
     total_segments = (file_size + CONST_SIZE - 1) // CONST_SIZE  # calculate the total number of segments to send, an additional segment is needed if the file size is not a multiple of CONST_SIZE
 
-    # Create a new UDP socket and set its send buffer size
+    # Create a new UDP socket
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as send_socket:
         
         # Prepare the data segments
