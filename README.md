@@ -15,3 +15,5 @@ python Server.py
 python Client.py
 ```
 and after that entering the requested parameters. ( notice they all have to be bigger than 0 )
+
+3. The server will continuously listen for incoming connections and respond to speed test requests.
