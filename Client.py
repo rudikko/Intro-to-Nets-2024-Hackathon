@@ -53,7 +53,7 @@ def handle_tcp(server_ip, tcp_port, file_size, conn_num):
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         tcp_socket.connect((server_ip, tcp_port))
 
-        tcp_socket.send(f"{file_size}\n".encode()) # sent amount of data required for transfer in bytes as a regular string followed by a new line
+        tcp_socket.send(f"{file_size}\n".encode()) # sent amount of data required for transfer in bytes as a regular string followed by a \n
 
         start_time = time.time()
 
@@ -87,18 +87,17 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
     """
     try:
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        udp_socket.settimeout(0.1)  # Set timeout , we don't want to wait forever
+        udp_socket.settimeout(1)  # Set timeout , if we don't recieve anything for a seconed consider the transfer complete
         udp_socket.sendto(struct.pack('!IBQ', MAGIC_COOKIE, MSG_TYPE_REQUEST, file_size), (server_ip, udp_port)) # build and send the request to the server
 
         start_time = time.time()
         total_segments = (file_size + 1024 - 1) // 1024 # calculate the total number of segments to send, an additional segment is needed if the file size is not a multiple of 1024
         received_segments = {}  # Dictionary to track received segments by sequence number
         received_bytes = 0  # Track the total number of bytes received
-        last_receive_time = time.time()  # Track the last time a segment was received
+
         while True:
             try:
-                data, _ = udp_socket.recvfrom(CONST_SIZE * 3)  # Receive a segment 3KB
-                last_receive_time = time.time()
+                data, _ = udp_socket.recvfrom(CONST_SIZE * 8)  # Receive a segment 8KB
 
                 # Unpack the header: MAGIC_COOKIE, MSG_TYPE, total segments, and current segment number
                 header_size = struct.calcsize('!IBQQ') # we calculate it in order to find the data size later
@@ -115,13 +114,8 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
                     received_segments[current_seg] = data_size
                     received_bytes += data_size
 
-                # If all segments are received, or enough time has passed, we can finish the transfer
-                if len(received_segments) >= total_segments or time.time() - last_receive_time >= 1.0: # consider the transfer complete
-                    break
-
             except socket.timeout:
-                        if received_segments:
-                            break
+                    break
 
         # Calculate total transfer time and speed
         total_time = time.time() - start_time

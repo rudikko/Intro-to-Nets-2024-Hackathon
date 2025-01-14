@@ -80,20 +80,20 @@ def handle_udp_client(data, addr):
     """
     Handles incoming UDP packets, addr is a tuple made up of the client's IP address and port number.
     """
-    magic_cookie, msg_type, file_size = struct.unpack('!IBQ', data)  # unpack the received packet to get the magic cookie, message type and file size (integer, byte and 64bit integer)
+    magic_cookie, msg_type, file_size = struct.unpack('!IBQ', data)  # Unpack the received packet to get the magic cookie, message type, and file size
 
     # Validate the magic_cookie and message type
     if magic_cookie != MAGIC_COOKIE or msg_type != MSG_TYPE_REQUEST:
         print(Fore.RED + "Invalid magic cookie or message type.")
         return
     
-    total_segments = (file_size + CONST_SIZE - 1) // CONST_SIZE  # calculate the total number of segments to send, an additional segment is needed if the file size is not a multiple of CONST_SIZE
+    total_segments = (file_size + CONST_SIZE - 1) // CONST_SIZE  # Calculate the total number of segments to send
 
     # Create a new UDP socket
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as send_socket:
         
-        # Prepare the data segments
-        segments = []
+        # Send segments dynamically in a loop
+        burst_size = 24  # Number of segments to send in a single burst
         for segment_num in range(total_segments):
             remaining = file_size - (segment_num * CONST_SIZE)
             current_segment_size = min(CONST_SIZE, remaining)
@@ -101,23 +101,20 @@ def handle_udp_client(data, addr):
             # Generate the payload with random data (the "actual" data)
             payload = bytearray(random.getrandbits(8) for _ in range(current_segment_size))
                 
-            # Prepare the header of the payload message, it is written in the assignment we can ignore the payload itself in the header.
+            # Prepare the header of the payload message
             header = struct.pack('!IBQQ', 
                 MAGIC_COOKIE,
                 MSG_TYPE_PAYLOAD,
                 total_segments,
                 segment_num
             )
-                
-            # Append the segment
-            segments.append(header + payload)
+            
+            # Send the segment
+            send_socket.sendto(header + payload, addr)
 
-        # Send segments in bursts to reduce congestion
-        burst_size = 24  # number of segments to send in a single burst, we don't want it to be too large since we don't know how the hotspot will perform.
-        for i in range(0, total_segments, burst_size):
-            for j in range(i, min(i + burst_size, total_segments)):
-                send_socket.sendto(segments[j], addr)
-            time.sleep(0.001)  # Small delay to prevent congestion
+            # Send in bursts to reduce congestion
+            if (segment_num + 1) % burst_size == 0:
+                time.sleep(0.001)  # Small delay to prevent congestion
         
 
 def start_server():
