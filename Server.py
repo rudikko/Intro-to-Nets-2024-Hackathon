@@ -36,16 +36,19 @@ def broadcast_offers(server_ip, udp_port, tcp_port):
     """
     Broadcasts offers to all clients on the network.
     """
-    while True:
-        # Create the offer packet , the packet is a 10 byte packet with the following structure , magic cookie is 4 bytes, message type is 1 byte, udp port is 2 bytes and tcp port is 2 bytes.
-        offer_packet = struct.pack('!IBHH', MAGIC_COOKIE, MSG_TYPE_OFFER, udp_port, tcp_port)
+    try:
+        while True:
+            # Create the offer packet , the packet is a 10 byte packet with the following structure , magic cookie is 4 bytes, message type is 1 byte, udp port is 2 bytes and tcp port is 2 bytes.
+            offer_packet = struct.pack('!IBHH', MAGIC_COOKIE, MSG_TYPE_OFFER, udp_port, tcp_port)
 
-        # Set up the socket to broadcast the offer message
-        broadcast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # IPv4, UDP socket
-        broadcast_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # allowing broadcast for the socket
-        broadcast_socket.sendto(offer_packet, ('<broadcast>', UDP_BROADCAST_PORT))  # broadcast the offer packet to all clients on the network.
+            # Set up the socket to broadcast the offer message
+            broadcast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # IPv4, UDP socket
+            broadcast_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # allowing broadcast for the socket
+            broadcast_socket.sendto(offer_packet, ('<broadcast>', UDP_BROADCAST_PORT))  # broadcast the offer packet to all clients on the network.
 
-        time.sleep(1)  # broadcast offers every second
+            time.sleep(1)  # broadcast offers every second
+    except Exception:
+        print(Fore.RED + "Error occurred while broadcasting offers.")
 
 
 def handle_tcp_client(clientconn, addr):
