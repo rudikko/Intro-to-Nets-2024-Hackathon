@@ -3,5 +3,6 @@ This is a client-server application designed to perform network speed tests usin
 
 ## Installation
 1. The project uses Python's standard libraries (socket, time, and struct) and also colorama, so if Python is already installed the only additional installation required is colorama (pip install colorama)
-2. Run the Server: Launch the server by running : ```bash
+2. Run the Server: Launch the server by running :
+```bash
 git clone https://github.com/yourusername/network-speed-test.git
