@@ -85,7 +85,7 @@ def handle_tcp_client(clientconn, addr):
 
 def handle_udp_client(data, addr):
     """
-    Handles incoming UDP packets, addr is a tuple made up of the client's IP address and port number.
+    Handles incoming UDP packets, 'addr' is a tuple made up of the client's IP address and port number.
     """
     magic_cookie, msg_type, file_size = struct.unpack('!IBQ', data)  # Unpack the received packet to get the magic cookie, message type, and file size
 
@@ -126,7 +126,7 @@ def handle_udp_client(data, addr):
 
 def start_server():
     """
-    Starts the server, spawn the broadcast thread and listens for incoming connections.
+    Starts the server, creates the broadcast thread and listens for incoming connections.
     """
     server_ip = socket.gethostbyname(socket.gethostname())
     print(Fore.YELLOW + f"Team {TEAM_NAME} Server started, listening on IP address {server_ip}")
