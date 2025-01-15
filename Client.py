@@ -139,7 +139,7 @@ def startclient():
     """
     file_size, tcp_num, udp_num = startup()
     while True:
-        print(Fore.YELLOW + "Client started, listening for offer requests...")
+        print(Fore.YELLOW + f"Team {TEAM_NAME} Client started, listening for offer requests...")
             
         server_ip, udp_port, tcp_port = waitforoffers()
             

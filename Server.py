@@ -122,7 +122,7 @@ def start_server():
     Starts the server, spawn the broadcast thread and listens for incoming connections.
     """
     server_ip = socket.gethostbyname(socket.gethostname())
-    print(Fore.YELLOW + f"Server started, listening on IP address {server_ip}")
+    print(Fore.YELLOW + f"Team {TEAM_NAME} Server started, listening on IP address {server_ip}")
     udp_port = find_available_port(1025, 65535, 'udp')  # find an available port for UDP , skip 1024 OS ports.
     tcp_port = find_available_port(1025, 65535, 'tcp')  # find an available port for TCP , skip 1024 OS ports.
     threading.Thread(target=broadcast_offers, args=(server_ip, udp_port, tcp_port), daemon=True).start()  # start a new thread that will be responsible for broadcasting offers
