@@ -7,3 +7,4 @@ MSG_TYPE_PAYLOAD = 0x4
 CONST_SIZE = 1024
 UDP_BROADCAST_PORT = 39457 # Client Port number for broadcasting UDP packets
 TEAM_NAME = "Ferfiz"
+BROADCOAST_IP = "255.255.255.255"

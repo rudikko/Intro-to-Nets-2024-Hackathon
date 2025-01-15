@@ -44,7 +44,7 @@ def broadcast_offers(server_ip, udp_port, tcp_port):
             # Set up the socket to broadcast the offer message
             broadcast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # IPv4, UDP socket
             broadcast_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # allowing broadcast for the socket
-            broadcast_socket.sendto(offer_packet, ('<broadcast>', UDP_BROADCAST_PORT))  # broadcast the offer packet to all clients on the network.
+            broadcast_socket.sendto(offer_packet, (BROADCOAST_IP, UDP_BROADCAST_PORT))  # broadcast the offer packet to all clients on the network.
 
             time.sleep(1)  # broadcast offers every second
     except Exception:
