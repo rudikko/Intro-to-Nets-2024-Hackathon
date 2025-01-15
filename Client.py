@@ -97,7 +97,7 @@ def handle_udp(server_ip, udp_port, file_size, conn_num):
 
         while True:
             try:
-                data, _ = udp_socket.recvfrom(CONST_SIZE * 36)  # Receive a segment 16KB
+                data, _ = udp_socket.recvfrom(CONST_SIZE * 32)  # Receive a segment 16KB
 
                 # Unpack the header: MAGIC_COOKIE, MSG_TYPE, total segments, and current segment number
                 header_size = struct.calcsize('!IBQQ') # we calculate it in order to find the data size later

@@ -100,7 +100,7 @@ def handle_udp_client(data, addr):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as send_socket:
         
         # Send segments dynamically in a loop
-        burst_size = 36  # Number of segments to send in a single burst
+        burst_size = 32  # Number of segments to send in a single burst
         for segment_num in range(total_segments):
             remaining = file_size - (segment_num * CONST_SIZE)
             current_segment_size = min(CONST_SIZE, remaining)
