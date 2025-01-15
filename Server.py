@@ -55,25 +55,32 @@ def handle_tcp_client(clientconn, addr):
     """
     Handles incoming TCP connections, addr is a tuple made up of the client's IP address and port number.
     """
-    file_size_bytes = clientconn.recv(CONST_SIZE).decode().strip()  # read CONST_SIZE bytes of data and convert it to a string without leading or trailing whitespaces
-    file_size = int(file_size_bytes)  # convert the string to an integer
+    print(Fore.GREEN + f"TCP Client connected from {addr}")
+    try:
 
-    already_sent = 0  # number of bytes sent to the client
-    single_transmission = CONST_SIZE * 8  # number of bytes to send in a single transmission - 8KB
+        file_size_bytes = clientconn.recv(CONST_SIZE).decode().strip()  # read CONST_SIZE bytes of data and convert it to a string without leading or trailing whitespaces
+        file_size = int(file_size_bytes)  # convert the string to an integer
 
-    while already_sent < file_size:
-        # send the file in chunks of 8KB
-        left_to_send = file_size - already_sent  # number of bytes left to send
-        to_send = min(single_transmission, left_to_send)
-        data = bytearray(random.getrandbits(8) for _ in range(to_send))  # generate random bytes to send to the client
-        try:
-            clientconn.sendall(data)  # send the data to the client
-        except Exception:
-            print(Fore.RED + f"Connection with {addr} was lost unexpectedly.")  # Print error in red
-            break  # Break the loop if the client disconnects unexpectedly
-        already_sent += to_send
+        already_sent = 0  # number of bytes sent to the client
+        single_transmission = CONST_SIZE * 8  # number of bytes to send in a single transmission - 8KB
 
-    clientconn.close()  # close the connection
+        while already_sent < file_size:
+            # send the file in chunks of 8KB
+            left_to_send = file_size - already_sent  # number of bytes left to send
+            to_send = min(single_transmission, left_to_send)
+            data = bytearray(random.getrandbits(8) for _ in range(to_send))  # generate random bytes to send to the client
+            try:
+                clientconn.sendall(data)  # send the data to the client
+            except Exception:
+                print(Fore.RED + f"Connection with {addr} was lost unexpectedly.")  # Print error in red
+                break  # Break the loop if the client disconnects unexpectedly
+            already_sent += to_send
+        
+    except:
+        print(Fore.RED + f"Error occurred while handling TCP connection with {addr}.")
+    finally:
+            print(Fore.BLUE + f"TCP Client disconnected from {addr}")
+            clientconn.close()  # close the connection
 
 
 def handle_udp_client(data, addr):
@@ -93,7 +100,7 @@ def handle_udp_client(data, addr):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as send_socket:
         
         # Send segments dynamically in a loop
-        burst_size = 24  # Number of segments to send in a single burst
+        burst_size = 36  # Number of segments to send in a single burst
         for segment_num in range(total_segments):
             remaining = file_size - (segment_num * CONST_SIZE)
             current_segment_size = min(CONST_SIZE, remaining)
