@@ -132,7 +132,7 @@ def start_server():
     print(Fore.YELLOW + f"Team {TEAM_NAME} Server started, listening on IP address {server_ip}")
     udp_port = find_available_port(1025, 65535, 'udp')  # find an available port for UDP , skip 1024 OS ports.
     tcp_port = find_available_port(1025, 65535, 'tcp')  # find an available port for TCP , skip 1024 OS ports.
-    threading.Thread(target=broadcast_offers, args=(server_ip, udp_port, tcp_port), daemon=True).start()  # start a new thread that will be responsible for broadcasting offers
+    threading.Thread(target=broadcast_offers, args=(udp_port, tcp_port), daemon=True).start()  # start a new thread that will be responsible for broadcasting offers
 
     # Set up the socket to listen for incoming connections - tcp
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
