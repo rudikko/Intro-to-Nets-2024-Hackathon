@@ -8,4 +8,3 @@ CONST_SIZE = 1024
 UDP_BROADCAST_PORT = 39457 # Client Port number for broadcasting UDP packets
 TEAM_NAME = "Ferfiz"
 BROADCOAST_IP = "172.18.255.255"
-

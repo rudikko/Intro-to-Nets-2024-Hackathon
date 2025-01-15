@@ -72,12 +72,11 @@ def handle_tcp_client(clientconn, addr):
             try:
                 clientconn.sendall(data)  # send the data to the client
             except Exception:
-                print(Fore.RED + f"Connection with {addr} was lost unexpectedly.")  # Print error in red
                 break  # Break the loop if the client disconnects unexpectedly
             already_sent += to_send
         
     except:
-        print(Fore.RED + f"Error occurred while handling TCP connection with {addr}.")
+        pass
     finally:
             print(Fore.BLUE + f"TCP Client disconnected from {addr}")
             clientconn.close()  # close the connection
@@ -100,7 +99,7 @@ def handle_udp_client(data, addr):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as send_socket:
         
         # Send segments dynamically in a loop
-        burst_size = 32  # Number of segments to send in a single burst
+        burst_size = 64  # Number of segments to send in a single burst
         for segment_num in range(total_segments):
             remaining = file_size - (segment_num * CONST_SIZE)
             current_segment_size = min(CONST_SIZE, remaining)
