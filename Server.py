@@ -136,13 +136,13 @@ def start_server():
 
     # Set up the socket to listen for incoming connections - tcp
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_socket.bind(('0.0.0.0', tcp_port))
+    tcp_socket.bind(('', tcp_port))
     tcp_socket.listen(7)  # maximum number of queued connection requests that can wait to be accepted
     tcp_socket.setblocking(False)  # make the socket non-blocking - the accept() method will not block the program
 
     # Set up the socket to listen for incoming connections - udp
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    udp_socket.bind(('0.0.0.0', udp_port))
+    udp_socket.bind(('', udp_port))
     udp_socket.setblocking(False)  # make the socket non-blocking - the recvfrom() method will not block the program
 
     while True:
